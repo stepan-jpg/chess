@@ -782,7 +782,7 @@ while running:
         else:
             mouse_x = int(mouse_x//(size/8))
             mouse_y = int((mouse_y-(y-x)/2)//(size/8))
-        if moves[mouse_y][mouse_x] != 0:
+        if moves[mouse_y][mouse_x] != 0 and moves[mouse_y][mouse_x] != 3:
             table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
             temp_figure = table[last_pressed[0]][last_pressed[1]]
             table[last_pressed[0]][last_pressed[1]] = 0
