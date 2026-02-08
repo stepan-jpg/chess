@@ -82,7 +82,7 @@ def show_allowed(x, y, alt):
                         moves[y-i][x] = 1
                     else: break
             else:
-                if y-1 != -1 and table[y-1][x] == 0: 
+                if y-1 != -1 and table[y-1][x] == 0:
                     moves[y-1][x] = 1
             if x-1 != -1 and table[y-1][x-1] != 0:
                 if table[y-1][x-1][1:] == 'b':
@@ -98,7 +98,7 @@ def show_allowed(x, y, alt):
             for i in range(1, 8):
                 if y-i < 0: break
                 if table[y-i][x] == 0: moves[y-i][x] = 1
-                else: 
+                else:
                     if table[y-i][x][1:] == 'w':
                         moves[y-i][x] = 2
                         break
@@ -112,8 +112,8 @@ def show_allowed(x, y, alt):
                     if table[y+i][x][1:] == 'w':
                         moves[y+i][x] = 2
                         break
-                    else: 
-                        moves[y+i][x] = 3 
+                    else:
+                        moves[y+i][x] = 3
                         break
             for i in range(1, 8):
                 if x-i < 0: break
@@ -139,7 +139,7 @@ def show_allowed(x, y, alt):
             for i in range(1, 7):
                 if y-i < 0: break
                 if table[y-i][x] == 0: moves[y-i][x] = 1
-                else: 
+                else:
                     if table[y-i][x][1:] == 'b':
                         moves[y-i][x] = 2
                         break
@@ -278,11 +278,11 @@ def show_allowed(x, y, alt):
             for i in range(1, 8):
                 if y-i < 0 or x-i < 0: break
                 if table[y-i][x-i] == 0: moves[y-i][x-i] = 1
-                else: 
+                else:
                     if table[y-i][x-i][1:] == 'w':
                         moves[y-i][x-i] = 2
                         break
-                    else: 
+                    else:
                         moves[y-i][x-i] = 3
                         break
             for i in range(1, 8):
@@ -292,7 +292,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x+i][1:] == 'w':
                         moves[y+i][x+i] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x+i] = 3
                         break
             for i in range(1, 8):
@@ -302,7 +302,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x-i][1:] == 'w':
                         moves[y+i][x-i] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x-i] = 3
                         break
             for i in range(1, 8):
@@ -312,14 +312,14 @@ def show_allowed(x, y, alt):
                     if table[y-i][x+i][1:] == 'w':
                         moves[y-i][x+i] = 2
                         break
-                    else: 
+                    else:
                         moves[y-i][x+i] = 3
                         break
         case 'Bw':
             for i in range(1, 8):
                 if y-i < 0 or x-i < 0: break
                 if table[y-i][x-i] == 0: moves[y-i][x-i] = 1
-                else: 
+                else:
                     if table[y-i][x-i][1:] == 'b':
                         moves[y-i][x-i] = 2
                         break
@@ -333,7 +333,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x+i][1:] == 'b':
                         moves[y+i][x+i] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x+i] = 3
                         break
             for i in range(1, 8):
@@ -343,7 +343,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x-i][1:] == 'b':
                         moves[y+i][x-i] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x-i] = 3
                         break
             for i in range(1, 8):
@@ -353,18 +353,18 @@ def show_allowed(x, y, alt):
                     if table[y-i][x+i][1:] == 'b':
                         moves[y-i][x+i] = 2
                         break
-                    else: 
+                    else:
                         moves[y-i][x+i] = 3
                         break
         case 'Qb':
             for i in range(1, 8):
                 if y-i < 0: break
                 if table[y-i][x] == 0: moves[y-i][x] = 1
-                else: 
+                else:
                     if table[y-i][x][1:] == 'w':
                         moves[y-i][x] = 2
                         break
-                    else: 
+                    else:
                         moves[y-i][x] = 3
                         break
             for i in range(1, 8):
@@ -374,7 +374,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x][1:] == 'w':
                         moves[y+i][x] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x] = 3
                         break
             for i in range(1, 8):
@@ -384,7 +384,7 @@ def show_allowed(x, y, alt):
                     if table[y][x-i][1:] == 'w':
                         moves[y][x-i] = 2
                         break
-                    else: 
+                    else:
                         moves[y][x-i] = 3
                         break
             for i in range(1, 8):
@@ -394,17 +394,17 @@ def show_allowed(x, y, alt):
                     if table[y][x+i][1:] == 'w':
                         moves[y][x+i] = 2
                         break
-                    else: 
+                    else:
                         moves[y][x+i] = 3
                         break
             for i in range(1, 8):
                 if y-i < 0 or x-i < 0: break
                 if table[y-i][x-i] == 0: moves[y-i][x-i] = 1
-                else: 
+                else:
                     if table[y-i][x-i][1:] == 'w':
                         moves[y-i][x-i] = 2
                         break
-                    else: 
+                    else:
                         moves[y-i][x-i] = 3
                         break
             for i in range(1, 8):
@@ -414,7 +414,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x+i][1:] == 'w':
                         moves[y+i][x+i] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x+i] = 3
                         break
             for i in range(1, 8):
@@ -424,7 +424,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x-i][1:] == 'w':
                         moves[y+i][x-i] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x-i] = 3
                         break
             for i in range(1, 8):
@@ -434,18 +434,18 @@ def show_allowed(x, y, alt):
                     if table[y-i][x+i][1:] == 'w':
                         moves[y-i][x+i] = 2
                         break
-                    else: 
+                    else:
                         moves[y-i][x+i] = 3
                         break
         case 'Qw':
             for i in range(1, 8):
                 if y-i < 0: break
                 if table[y-i][x] == 0: moves[y-i][x] = 1
-                else: 
+                else:
                     if table[y-i][x][1:] == 'b':
                         moves[y-i][x] = 2
                         break
-                    else: 
+                    else:
                         moves[y-i][x] = 3
                         break
             for i in range(1, 8):
@@ -455,7 +455,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x][1:] == 'b':
                         moves[y+i][x] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x] = 3
                         break
             for i in range(1, 8):
@@ -465,7 +465,7 @@ def show_allowed(x, y, alt):
                     if table[y][x-i][1:] == 'b':
                         moves[y][x-i] = 2
                         break
-                    else: 
+                    else:
                         moves[y][x-i] = 3
                         break
             for i in range(1, 8):
@@ -475,17 +475,17 @@ def show_allowed(x, y, alt):
                     if table[y][x+i][1:] == 'b':
                         moves[y][x+i] = 2
                         break
-                    else: 
+                    else:
                         moves[y][x+i] = 3
                         break
             for i in range(1, 8):
                 if y-i < 0 or x-i < 0: break
                 if table[y-i][x-i] == 0: moves[y-i][x-i] = 1
-                else: 
+                else:
                     if table[y-i][x-i][1:] == 'b':
                         moves[y-i][x-i] = 2
                         break
-                    else: 
+                    else:
                         moves[y-i][x-i] = 3
                         break
             for i in range(1, 8):
@@ -495,7 +495,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x+i][1:] == 'b':
                         moves[y+i][x+i] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x+i] = 3
                         break
             for i in range(1, 8):
@@ -505,7 +505,7 @@ def show_allowed(x, y, alt):
                     if table[y+i][x-i][1:] == 'b':
                         moves[y+i][x-i] = 2
                         break
-                    else: 
+                    else:
                         moves[y+i][x-i] = 3
                         break
             for i in range(1, 8):
@@ -761,38 +761,38 @@ kingw_index = (7, 4)
 temp_kingw = (7, 4)
 order = 0
 orders = {'b':1,
-          'w':0}
+    'w':0}
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    if end != 0:
-        continue
-    if screen.get_size() != (x, y):
-        x, y = screen.get_size()
-        size = min(x, y)
-        square_size = size/8
-        draw_table()
-        pygame.display.update()
-    if event.type == MOUSEBUTTONDOWN:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if x > y:
-            mouse_x = int((mouse_x-(x-y)/2)//(size/8))
-            mouse_y = int(mouse_y//(size/8))
-        else:
-            mouse_x = int(mouse_x//(size/8))
-            mouse_y = int((mouse_y-(y-x)/2)//(size/8))
-        if moves[mouse_y][mouse_x] != 0:
-            table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
-            temp_figure = table[last_pressed[0]][last_pressed[1]]
-            table[last_pressed[0]][last_pressed[1]] = 0
-            if table[mouse_y][mouse_x] == 'Kb':
-                temp_kingb = kingb_index
-                kingb_index = (mouse_y, mouse_x)
-            elif table[mouse_y][mouse_x] == 'Kw':
-                temp_kingw = kingw_index
-                kingw_index = (mouse_y, mouse_x)
-            
+            if end != 0:
+                continue
+                if screen.get_size() != (x, y):
+                    x, y = screen.get_size()
+                    size = min(x, y)
+                    square_size = size/8
+                    draw_table()
+                    pygame.display.update()
+                    if event.type == MOUSEBUTTONDOWN:
+                        mouse_x, mouse_y = pygame.mouse.get_pos()
+                        if x > y:
+                            mouse_x = int((mouse_x-(x-y)/2)//(size/8))
+                            mouse_y = int(mouse_y//(size/8))
+                        else:
+                            mouse_x = int(mouse_x//(size/8))
+                            mouse_y = int((mouse_y-(y-x)/2)//(size/8))
+                            if moves[mouse_y][mouse_x] != 0:
+                                table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
+                                temp_figure = table[last_pressed[0]][last_pressed[1]]
+                                table[last_pressed[0]][last_pressed[1]] = 0
+                                if table[mouse_y][mouse_x] == 'Kb':
+                                    temp_kingb = kingb_index
+                                    kingb_index = (mouse_y, mouse_x)
+                                elif table[mouse_y][mouse_x] == 'Kw':
+                                    temp_kingw = kingw_index
+                                    kingw_index = (mouse_y, mouse_x)
+
             if table[mouse_y][mouse_x][1:] == 'b':
                 attacker = check_if_king_atacked('w')
                 if attacker != None:
@@ -807,7 +807,7 @@ while running:
                     table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
                     kingw_index = temp_kingw
                     continue
-            
+
             table[last_pressed[0]][last_pressed[1]] = 0
             moves = [[0]*8 for _ in range(8)]
 
@@ -826,36 +826,36 @@ while running:
                 else: moves = [[0]*8 for _ in range(8)]
 
             order += 1
-        elif (mouse_y, mouse_x) == last_pressed:
-            moves = [[0]*8 for _ in range(8)]
-            last_pressed = (-1, -1)
-        elif table[mouse_y][mouse_x] != 0:
-            if orders[table[mouse_y][mouse_x][1:]] == order%2:
-                last_pressed = (mouse_y, mouse_x)
-                moves = [[0]*8 for _ in range(8)]
-                #print(mouse_y, mouse_x)
-                show_allowed(mouse_x, mouse_y, False)
-                #print(moves)
-        draw_table()
-        pygame.display.update()
-        pygame.time.delay(50)
-        if end == 1:
-            Font = pygame.font.SysFont('chalkduster.ttf', size//16)
-            text = Font.render('Black won', True, (23, 23, 23))
-            textRect = text.get_rect()
-            textRect.center = (size/2, size/2)
-            screen.blit(text, textRect)
-            pygame.display.update()
-        elif end == 2:
-            Font = pygame.font.SysFont('chalkduster.ttf', size//16)
-            text = Font.render('White won', True, (195, 195, 195))
-            textRect = text.get_rect()
-            textRect.center = (size/2, size/2)
-            screen.blit(text, textRect)
-            pygame.display.update()
-    
-        
-    
+                    elif (mouse_y, mouse_x) == last_pressed:
+                        moves = [[0]*8 for _ in range(8)]
+                        last_pressed = (-1, -1)
+                    elif table[mouse_y][mouse_x] != 0:
+                        if orders[table[mouse_y][mouse_x][1:]] == order%2:
+                            last_pressed = (mouse_y, mouse_x)
+                            moves = [[0]*8 for _ in range(8)]
+                            #print(mouse_y, mouse_x)
+                            show_allowed(mouse_x, mouse_y, False)
+                            #print(moves)
+                            draw_table()
+                            pygame.display.update()
+                            pygame.time.delay(50)
+                            if end == 1:
+                                Font = pygame.font.SysFont('chalkduster.ttf', size//16)
+                                text = Font.render('Black won', True, (23, 23, 23))
+                                textRect = text.get_rect()
+                                textRect.center = (size/2, size/2)
+                                screen.blit(text, textRect)
+                                pygame.display.update()
+                            elif end == 2:
+                                Font = pygame.font.SysFont('chalkduster.ttf', size//16)
+                                text = Font.render('White won', True, (195, 195, 195))
+                                textRect = text.get_rect()
+                                textRect.center = (size/2, size/2)
+                                screen.blit(text, textRect)
+                                pygame.display.update()
+
+
+
     #draw
     #pygame.display.update()
 

@@ -1,0 +1,9 @@
+[project]
+name = "chess"
+version = "0.0.1"
+description = "simple python chess with pygame"
+readme = "README.md"
+requires-python = "==3.13.5"
+dependencies = [
+    "pygame>=2.6.1",
+]
