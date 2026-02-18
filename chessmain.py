@@ -441,7 +441,7 @@ def show_allowed(x, y, alt):
             for i in range(1, 8):
                 if y-i < 0: break
                 if table[y-i][x] == 0: moves[y-i][x] = 1
-                else: 
+                else:
                     if table[y-i][x][1:] == 'b':
                         moves[y-i][x] = 2
                         break
@@ -645,14 +645,18 @@ def check_if_king_atacked(side):
         for i in range(8):
             if table[j][i] != 0 and table[j][i][1:] == side:
                 show_allowed(i, j, True)
+                #print(moves)
                 if side == 'w':
-                    if moves[kingb_index[0]][kingb_index[1]] == 2:
+                    #print(kingb_index, moves[kingb_index[0]][kingb_index[1]])
+                    if moves[kingb_index[0]][kingb_index[1]] == 2 or moves[kingb_index[0]][kingb_index[1]] == 1:
                         moves = temp
                         return j, i
                 else:
-                    if moves[kingw_index[0]][kingw_index[1]] == 2:
+                    if moves[kingw_index[0]][kingw_index[1]] == 2 or moves[kingw_index[0]][kingw_index[1]] == 1:
                         moves = temp
                         return j, i
+    #print(moves[kingb_index[0]][kingb_index[1]])
+    #print(moves[kingw_index[0]][kingw_index[1]])
     moves = temp
     return None
 
@@ -794,19 +798,27 @@ while running:
                 kingw_index = (mouse_y, mouse_x)
             
             if table[mouse_y][mouse_x][1:] == 'b':
+                #print(moves)
                 attacker = check_if_king_atacked('w')
                 if attacker != None:
                     table[last_pressed[0]][last_pressed[1]] = temp_figure
                     table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
                     kingb_index = temp_kingb
+                    #print('attcker != None')
+                    pygame.time.delay(50)
                     continue
+                temp_kingb = kingb_index
             else:
+                #print(moves)
                 attacker = check_if_king_atacked('b')
                 if attacker != None:
                     table[last_pressed[0]][last_pressed[1]] = temp_figure
                     table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
                     kingw_index = temp_kingw
+                    #print('attcker != None')
+                    pygame.time.delay(50)
                     continue
+                temp_kingw = kingw_index
             
             table[last_pressed[0]][last_pressed[1]] = 0
             moves = [[0]*8 for _ in range(8)]
@@ -839,6 +851,7 @@ while running:
         draw_table()
         pygame.display.update()
         pygame.time.delay(50)
+        #print(kingb_index, kingw_index)
         if end == 1:
             Font = pygame.font.SysFont('chalkduster.ttf', size//16)
             text = Font.render('Black won', True, (23, 23, 23))
