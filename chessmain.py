@@ -50,9 +50,11 @@ def show_allowed(x, y, alt):
         case 0: pass
         case 'Pb':
             if alt:
-                if x-1 != -1: moves[y+1][x-1] = 1
-                if x+1 != 8: moves[y+1][x+1] = 1
-                return
+                if y < 7:
+                    if x-1 != -1: moves[y+1][x-1] = 1
+                    if x+1 != 8: moves[y+1][x+1] = 1
+                    return
+                else: return
             if y == 1:
                 for i in range(1, 3):
                     if table[y+i][x] == 0:
@@ -73,9 +75,11 @@ def show_allowed(x, y, alt):
                     moves[y+1][x+1] = 3
         case 'Pw':
             if alt:
-                if x-1 != -1: moves[y-1][x-1] = 1
-                if x+1 != 8: moves[y-1][x+1] = 1
-                return
+                if y > 0:
+                    if x-1 != -1: moves[y-1][x-1] = 1
+                    if x+1 != 8: moves[y-1][x+1] = 1
+                    return
+                else: return
             if y == 6:
                 for i in range(1, 3):
                     if table[y-i][x] == 0:
@@ -721,9 +725,78 @@ def check_if_mate(side):
     moves = [[0]*8 for _ in range(8)]
     return True
 
+def check_if_end():
+    Font = pygame.font.SysFont('chalkduster.ttf', size//16)
+    if end == 1:
+        text = Font.render('Black won', True, (23, 23, 23))
+        textRect = text.get_rect()
+        textRect.center = (size/2, size/2)
+        screen.blit(text, textRect)
+        pygame.display.update()
+    elif end == 2:
+        text = Font.render('White won', True, (195, 195, 195))
+        textRect = text.get_rect()
+        textRect.center = (size/2, size/2)
+        screen.blit(text, textRect)
+        pygame.display.update()
 
 
+transformation = {
+    0: 'Qw',
+    1: 'Bw',
+    2: 'Cw',
+    3: 'Rw',
+    4: 'Qb',
+    5: 'Bb',
+    6: 'Cb',
+    7: 'Rb'
+}
 
+
+def draw_pawn_choice(pos, side):
+    mouse_pos = pygame.mouse.get_pos()
+    choice = None
+    if x > y:
+        width = size/8*pos+(x-y)/2
+    else:
+        width = size/8*pos
+    heigh = size/8
+    if side == 'w':
+        for i in range(0, 4):
+            if y > x:
+                height = heigh*i+(y-x)/2
+            else:
+                height = heigh*i
+            if width <= mouse_pos[0] <= width+square_size and height <= mouse_pos[1] <= height + square_size:
+                pygame.draw.rect(screen, (195, 195, 195),[width, height, square_size, square_size])
+                choice = i
+            else:
+                pygame.draw.rect(screen, (127, 127, 127),[width, height, square_size, square_size])
+            img = pygame.image.load(pieces[transformation[i]])
+            img = pygame.transform.scale(img, (square_size, square_size))
+            screen.blit(img, (width, height))
+        pygame.display.update()
+        return choice
+    else:
+        for i in range(7, 3, -1):
+            if y > x:
+                height = heigh*i+(y-x)/2
+            else:
+                height = heigh*i
+            if width <= mouse_pos[0] <= width+square_size and height <= mouse_pos[1] <= height+square_size:
+                pygame.draw.rect(screen, (195, 195, 195),[width, height, square_size, square_size])
+                choice = i
+            else:
+                pygame.draw.rect(screen, (127, 127, 127),[width, height, square_size, square_size])
+            img = pygame.image.load(pieces[transformation[i]])
+            img = pygame.transform.scale(img, (square_size, square_size))
+            screen.blit(img, (width, height))
+        pygame.display.update()
+        return choice
+
+
+def pawn_choice(y, side):
+    table[mouse_y][mouse_x] = transformation[y]
 
 
 
@@ -764,108 +837,100 @@ temp_kingb = (0, 4)
 kingw_index = (7, 4)
 temp_kingw = (7, 4)
 order = 0
-orders = {'b':1,
-          'w':0}
+orders = {'b':1, 'w':0}
+pawn_trans = False
 while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    if end != 0:
-        continue
     if screen.get_size() != (x, y):
         x, y = screen.get_size()
         size = min(x, y)
         square_size = size/8
         draw_table()
         pygame.display.update()
-    if event.type == MOUSEBUTTONDOWN:
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if x > y:
-            mouse_x = int((mouse_x-(x-y)/2)//(size/8))
-            mouse_y = int(mouse_y//(size/8))
-        else:
-            mouse_x = int(mouse_x//(size/8))
-            mouse_y = int((mouse_y-(y-x)/2)//(size/8))
-        if moves[mouse_y][mouse_x] != 0 and moves[mouse_y][mouse_x] != 3:
-            table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
-            temp_figure = table[last_pressed[0]][last_pressed[1]]
-            table[last_pressed[0]][last_pressed[1]] = 0
-            if table[mouse_y][mouse_x] == 'Kb':
-                temp_kingb = kingb_index
-                kingb_index = (mouse_y, mouse_x)
-            elif table[mouse_y][mouse_x] == 'Kw':
-                temp_kingw = kingw_index
-                kingw_index = (mouse_y, mouse_x)
-            
-            if table[mouse_y][mouse_x][1:] == 'b':
-                #print(moves)
-                attacker = check_if_king_atacked('w')
-                if attacker != None:
-                    table[last_pressed[0]][last_pressed[1]] = temp_figure
-                    table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
-                    kingb_index = temp_kingb
-                    #print('attcker != None')
-                    pygame.time.delay(50)
-                    continue
-                temp_kingb = kingb_index
+    if pawn_trans:
+        trans_choice = draw_pawn_choice(mouse_x, table[mouse_y][mouse_x][1:])
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == MOUSEBUTTONDOWN:
+            if pawn_trans:
+                if trans_choice == None:continue
+                pawn_choice(trans_choice, table[mouse_y][mouse_x][1:])
+                pawn_trans = False
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if x > y:
+                mouse_x = int((mouse_x-(x-y)/2)//(size/8))
+                if mouse_x > 7 or mouse_x < 0: continue
+                mouse_y = int(mouse_y//(size/8))
+                #print(mouse_x, mouse_y)
             else:
-                #print(moves)
-                attacker = check_if_king_atacked('b')
-                if attacker != None:
-                    table[last_pressed[0]][last_pressed[1]] = temp_figure
-                    table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
-                    kingw_index = temp_kingw
-                    #print('attcker != None')
-                    pygame.time.delay(50)
-                    continue
-                temp_kingw = kingw_index
-            
-            table[last_pressed[0]][last_pressed[1]] = 0
-            moves = [[0]*8 for _ in range(8)]
-
-            if table[mouse_y][mouse_x][1:] == 'b':
-                show_allowed(kingw_index[1], kingw_index[0], False)
-                if moves == [[0]*8 for _ in range(8)]:
-                    if check_if_mate('b'):
-                        end = 1
-                else: moves = [[0]*8 for _ in range(8)]
-
-            else:
-                show_allowed(kingb_index[1], kingb_index[0], False)
-                if moves == [[0]*8 for _ in range(8)]:
-                    if check_if_mate('w'):
-                        end = 2
-                else: moves = [[0]*8 for _ in range(8)]
-
-            order += 1
-        elif (mouse_y, mouse_x) == last_pressed:
-            moves = [[0]*8 for _ in range(8)]
-            last_pressed = (-1, -1)
-        elif table[mouse_y][mouse_x] != 0:
-            if orders[table[mouse_y][mouse_x][1:]] == order%2:
-                last_pressed = (mouse_y, mouse_x)
+                mouse_x = int(mouse_x//(size/8))
+                mouse_y = int((mouse_y-(y-x)/2)//(size/8))
+                if mouse_y > 7 or mouse_y < 0: continue
+            if moves[mouse_y][mouse_x] != 0 and moves[mouse_y][mouse_x] != 3:
+                table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
+                temp_figure = table[last_pressed[0]][last_pressed[1]]
+                table[last_pressed[0]][last_pressed[1]] = 0
+                if table[mouse_y][mouse_x] == 'Kb':
+                    temp_kingb = kingb_index
+                    kingb_index = (mouse_y, mouse_x)
+                elif table[mouse_y][mouse_x] == 'Kw':
+                    temp_kingw = kingw_index
+                    kingw_index = (mouse_y, mouse_x)
+                if table[mouse_y][mouse_x][1:] == 'b':
+                    #print(moves)
+                    attacker = check_if_king_atacked('w')
+                    if attacker != None:
+                        table[last_pressed[0]][last_pressed[1]] = temp_figure
+                        table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
+                        kingb_index = temp_kingb
+                        #print('attcker != None')
+                        pygame.time.delay(50)
+                        continue
+                    temp_kingb = kingb_index
+                else:
+                    #print(moves)
+                    attacker = check_if_king_atacked('b')
+                    if attacker != None:
+                        table[last_pressed[0]][last_pressed[1]] = temp_figure
+                        table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
+                        kingw_index = temp_kingw
+                        #print('attcker != None')
+                        pygame.time.delay(50)
+                        continue
+                    temp_kingw = kingw_index
+                table[last_pressed[0]][last_pressed[1]] = 0
                 moves = [[0]*8 for _ in range(8)]
-                #print(mouse_y, mouse_x)
-                show_allowed(mouse_x, mouse_y, False)
-                #print(moves)
-        draw_table()
-        pygame.display.update()
-        pygame.time.delay(50)
-        #print(kingb_index, kingw_index)
-        if end == 1:
-            Font = pygame.font.SysFont('chalkduster.ttf', size//16)
-            text = Font.render('Black won', True, (23, 23, 23))
-            textRect = text.get_rect()
-            textRect.center = (size/2, size/2)
-            screen.blit(text, textRect)
+                if table[mouse_y][mouse_x][1:] == 'b':
+                    show_allowed(kingw_index[1], kingw_index[0], False)
+                    if moves == [[0]*8 for _ in range(8)]:
+                        if check_if_mate('b'):
+                            end = 1
+                    else: moves = [[0]*8 for _ in range(8)]
+                else:
+                    show_allowed(kingb_index[1], kingb_index[0], False)
+                    if moves == [[0]*8 for _ in range(8)]:
+                        if check_if_mate('w'):
+                            end = 2
+                    else: moves = [[0]*8 for _ in range(8)]
+                if table[mouse_y][mouse_x][:1] == 'P' and (mouse_y == 0 or mouse_y == 7):
+                    #print(table[mouse_y][mouse_x])
+                    pawn_trans = True
+                order += 1
+            elif (mouse_y, mouse_x) == last_pressed:
+                moves = [[0]*8 for _ in range(8)]
+                last_pressed = (-1, -1)
+            elif table[mouse_y][mouse_x] != 0:
+                if orders[table[mouse_y][mouse_x][1:]] == order%2:
+                    last_pressed = (mouse_y, mouse_x)
+                    moves = [[0]*8 for _ in range(8)]
+                    #print(mouse_y, mouse_x)
+                    show_allowed(mouse_x, mouse_y, False)
+                    #print(moves)
+            draw_table()
             pygame.display.update()
-        elif end == 2:
-            Font = pygame.font.SysFont('chalkduster.ttf', size//16)
-            text = Font.render('White won', True, (195, 195, 195))
-            textRect = text.get_rect()
-            textRect.center = (size/2, size/2)
-            screen.blit(text, textRect)
-            pygame.display.update()
+            pygame.time.delay(50)
+            #print(kingb_index, kingw_index)
+    check_if_end()
     
         
     
