@@ -37,7 +37,7 @@ def draw_table():
                 elif moves[i][j] == 2:
                     pygame.draw.rect(screen, (255, 72, 75), (x/8*j, x/8*i+(y-x)/2, square_size, square_size))
                 posx, posy = x/8*j, x/8*i+(y-x)/2
-            if table[i][j] == 0:
+            if table[i][j] == 0 or (table[i][j] == 'c'):
                 continue
             img = pygame.image.load(pieces[table[i][j]])
             img = pygame.transform.scale(img, (square_size, square_size))
@@ -64,12 +64,12 @@ def show_allowed(x, y, alt):
                 if y+1 != 8 and table[y+1][x] == 0:
                     moves[y+1][x] = 1
             if x-1 != -1 and table[y+1][x-1] != 0:
-                if table[y+1][x-1][1:] == 'w':
+                if table[y+1][x-1][1:] == 'w' or table[y+1][x-1] == 'c':
                     moves[y+1][x-1] = 2
                 else:
                     moves[y+1][x-1] = 3
             if x+1 != 8 and table[y+1][x+1] != 0:
-                if table[y+1][x+1][1:] == 'w':
+                if table[y+1][x+1][1:] == 'w' or table[y+1][x+1] == 'c':
                     moves[y+1][x+1] = 2
                 else:
                     moves[y+1][x+1] = 3
@@ -89,12 +89,12 @@ def show_allowed(x, y, alt):
                 if y-1 != -1 and table[y-1][x] == 0: 
                     moves[y-1][x] = 1
             if x-1 != -1 and table[y-1][x-1] != 0:
-                if table[y-1][x-1][1:] == 'b':
+                if table[y-1][x-1][1:] == 'b' or table[y-1][x-1] == 'c':
                     moves[y-1][x-1] = 2
                 else:
                     moves[y-1][x-1] = 3
             if x+1 != 8 and table[y-1][x+1] != 0:
-                if table[y-1][x+1][1:] == 'b':
+                if table[y-1][x+1][1:] == 'b' or table[y-1][x+1] == 'c':
                     moves[y-1][x+1] = 2
                 else:
                     moves[y-1][x+1] = 3
@@ -794,9 +794,44 @@ def draw_pawn_choice(pos, side):
         pygame.display.update()
         return choice
 
-
-def pawn_choice(y, side):
+def pawn_choice(y):
     table[mouse_y][mouse_x] = transformation[y]
+
+def castling(rook, side):
+    global kingb_index, kingw_index, order
+    for j in range(8):
+        for i in range(8):
+            if table[j][i] != 0 and table[j][i][1:] == changer[side]:
+                show_allowed(i, j, True)
+                #print(j, i)
+                #for i in range(8):
+                    #print(moves[i])
+    if rook[1] == 0:
+        for i in range(1, 5):
+            if (moves[rook[0]][i] != 0 and i != 1) or moves[rook[0]][1] == 3:
+                #print(rook[0], i)
+                return
+        table[rook[0]][4], table[rook[0]][2] = table[rook[0]][2], table[rook[0]][4] # king swap
+        table[rook[0]][0], table[rook[0]][3] = table[rook[0]][3], table[rook[0]][0] # rook sawp
+        if side == 'b':
+            kingb_index = (0, 2)
+        else:
+            kingw_index = (7, 2)
+    else:
+        for i in range(4, 7):
+            if moves[rook[0]][i] != 0:
+                # print(rook[0], i)
+                # for i in range(8):
+                #     print(moves[i])
+                return
+        table[rook[0]][4], table[rook[0]][6] = table[rook[0]][6], table[rook[0]][4] # king swap
+        table[rook[0]][7], table[rook[0]][5] = table[rook[0]][5], table[rook[0]][7]
+        if side == 'b':
+            kingb_index = (0, 6)
+        else:
+            kingw_index = (7, 6)
+    order += 1
+
 
 
 
@@ -811,6 +846,17 @@ table = [
          ['Pw', 'Pw', 'Pw', 'Pw', 'Pw', 'Pw', 'Pw', 'Pw'],
          ['Rw', 'Cw', 'Bw', 'Qw', 'Kw', 'Bw', 'Cw', 'Rw']
          ]
+
+king_and_rooks_moved = {
+    '(0, 0)':False,
+    '(0, 4)':False,
+    '(0, 7)':False,
+    '(7, 0)':False,
+    '(7, 4)':False,
+    '(7, 7)':False,
+}
+
+
 
 
 moves = [[0]*8 for _ in range(8)]
@@ -839,6 +885,7 @@ temp_kingw = (7, 4)
 order = 0
 orders = {'b':1, 'w':0}
 pawn_trans = False
+capt_pos = (0, 0)
 while running:
     if screen.get_size() != (x, y):
         x, y = screen.get_size()
@@ -854,7 +901,8 @@ while running:
         if event.type == MOUSEBUTTONDOWN:
             if pawn_trans:
                 if trans_choice == None:continue
-                pawn_choice(trans_choice, table[mouse_y][mouse_x][1:])
+                trans_choice = draw_pawn_choice(mouse_x, table[mouse_y][mouse_x][1:])
+                pawn_choice(trans_choice)
                 pawn_trans = False
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if x > y:
@@ -867,6 +915,40 @@ while running:
                 mouse_y = int((mouse_y-(y-x)/2)//(size/8))
                 if mouse_y > 7 or mouse_y < 0: continue
             if moves[mouse_y][mouse_x] != 0 and moves[mouse_y][mouse_x] != 3:
+                if capt_pos != (0, 0):
+                    if table[mouse_y][mouse_x] == 'c':
+                        print('clicked on capt pos')
+                        table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
+                        table[last_pressed[0]][last_pressed[1]] = 0
+                        if table[mouse_y][mouse_x][1:] == 'b':
+                            attacker = check_if_king_atacked('w')
+                            if attacker != None:
+                                print('king atacked')
+                                table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
+                                table[mouse_y][mouse_x] = 'c'
+                                pygame.time.delay(50)
+                                continue
+                            temp_kingb = kingb_index
+                        else:
+                            attacker = check_if_king_atacked('b')
+                            if attacker != None:
+                                print('king atacked')
+                                table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
+                                table[mouse_y][mouse_x] = 'c'
+                                pygame.time.delay(50)
+                                continue
+                        table[mouse_y+(last_pressed[0]-mouse_y)][mouse_x] = 0
+                        table[last_pressed[0]][last_pressed[1]] = 0
+                        capt_pos = (0, 0)
+                        moves = [[0]*8 for _ in range(8)]
+                        draw_table()
+                        pygame.display.update()
+                        pygame.time.delay(50)
+                        order += 1
+                        continue
+                    else:
+                        table[capt_pos[0]][capt_pos[1]] = 0
+                        capt_pos = (0, 0)
                 table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
                 temp_figure = table[last_pressed[0]][last_pressed[1]]
                 table[last_pressed[0]][last_pressed[1]] = 0
@@ -912,30 +994,42 @@ while running:
                         if check_if_mate('w'):
                             end = 2
                     else: moves = [[0]*8 for _ in range(8)]
-                if table[mouse_y][mouse_x][:1] == 'P' and (mouse_y == 0 or mouse_y == 7):
-                    #print(table[mouse_y][mouse_x])
-                    pawn_trans = True
+                if table[capt_pos[0]][capt_pos[1]] == 'c':
+                    table[capt_pos[0]][capt_pos[1]] = 0
+                    capt_pos = (0, 0)
+                if table[mouse_y][mouse_x][:1] == 'P':
+                    if (mouse_y == 0 or mouse_y == 7):
+                        #print(table[mouse_y][mouse_x])
+                        pawn_trans = True
+                    elif abs(last_pressed[0]-mouse_y) == 2:
+                        capt_pos = (mouse_y+(last_pressed[0]-mouse_y)//2, last_pressed[1])
+                        #print(capt_pos)
+                        table[mouse_y+(last_pressed[0]-mouse_y)//2][last_pressed[1]] = 'c'
+                if last_pressed in king_and_rooks_moved:
+                    king_and_rooks_moved[str(last_pressed)] = True
                 order += 1
             elif (mouse_y, mouse_x) == last_pressed:
                 moves = [[0]*8 for _ in range(8)]
                 last_pressed = (-1, -1)
             elif table[mouse_y][mouse_x] != 0:
                 if orders[table[mouse_y][mouse_x][1:]] == order%2:
-                    last_pressed = (mouse_y, mouse_x)
-                    moves = [[0]*8 for _ in range(8)]
-                    #print(mouse_y, mouse_x)
-                    show_allowed(mouse_x, mouse_y, False)
-                    #print(moves)
+                    if table[last_pressed[0]][last_pressed[1]] != 0 and table[last_pressed[0]][last_pressed[1]][:1] == 'K' and table[mouse_y][mouse_x][:1] == 'R'\
+                    and str(last_pressed) in king_and_rooks_moved and str((mouse_y, mouse_x)) in king_and_rooks_moved\
+                    and not king_and_rooks_moved[str(last_pressed)] and not king_and_rooks_moved[str((mouse_y, mouse_x))]:
+                        moves = [[0]*8 for _ in range(8)]
+                        castling([mouse_y, mouse_x], table[last_pressed[0]][last_pressed[1]][1:])
+                        moves = [[0]*8 for _ in range(8)]
+                    else:
+                        last_pressed = (mouse_y, mouse_x)
+                        moves = [[0]*8 for _ in range(8)]
+                        #print(mouse_y, mouse_x)
+                        show_allowed(mouse_x, mouse_y, False)
+                        #print(moves)
             draw_table()
             pygame.display.update()
             pygame.time.delay(50)
             #print(kingb_index, kingw_index)
     check_if_end()
-    
-        
-    
-    #draw
-    #pygame.display.update()
 
 
 # Quit Pygame
