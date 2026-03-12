@@ -860,7 +860,7 @@ king_and_rooks_moved = {
 
 
 moves = [[0]*8 for _ in range(8)]
-
+capt_table = [[0]*8 for _ in range(8)]
 
 #initialize
 pygame.init()
@@ -916,29 +916,28 @@ while running:
                 if mouse_y > 7 or mouse_y < 0: continue
             if moves[mouse_y][mouse_x] != 0 and moves[mouse_y][mouse_x] != 3:
                 if capt_pos != (0, 0):
-                    if table[mouse_y][mouse_x] == 'c':
-                        print('clicked on capt pos')
+                    if capt_table[mouse_y][mouse_x] == 'c' and table[last_pressed[0]][last_pressed[1]][1:] == 'P':
+                        #print('clicked on capt pos')
                         table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
-                        table[last_pressed[0]][last_pressed[1]] = 0
+                        table[mouse_y+(last_pressed[0]-mouse_y)][mouse_x] = 0
                         if table[mouse_y][mouse_x][1:] == 'b':
                             attacker = check_if_king_atacked('w')
                             if attacker != None:
-                                print('king atacked')
+                                #print('king atacked')
                                 table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
-                                table[mouse_y][mouse_x] = 'c'
+                                table[mouse_y+(last_pressed[0]-mouse_y)][mouse_x] = 'Pb'
                                 pygame.time.delay(50)
                                 continue
                             temp_kingb = kingb_index
                         else:
                             attacker = check_if_king_atacked('b')
                             if attacker != None:
-                                print('king atacked')
+                                #print('king atacked')
                                 table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
-                                table[mouse_y][mouse_x] = 'c'
+                                table[mouse_y+(last_pressed[0]-mouse_y)][mouse_x] = 'Pw'
                                 pygame.time.delay(50)
                                 continue
-                        table[mouse_y+(last_pressed[0]-mouse_y)][mouse_x] = 0
-                        table[last_pressed[0]][last_pressed[1]] = 0
+                        capt_table[last_pressed[0]][last_pressed[1]] = 0
                         capt_pos = (0, 0)
                         moves = [[0]*8 for _ in range(8)]
                         draw_table()
@@ -1004,7 +1003,7 @@ while running:
                     elif abs(last_pressed[0]-mouse_y) == 2:
                         capt_pos = (mouse_y+(last_pressed[0]-mouse_y)//2, last_pressed[1])
                         #print(capt_pos)
-                        table[mouse_y+(last_pressed[0]-mouse_y)//2][last_pressed[1]] = 'c'
+                        capt_table[mouse_y+(last_pressed[0]-mouse_y)//2][last_pressed[1]] = 'c'
                 if last_pressed in king_and_rooks_moved:
                     king_and_rooks_moved[str(last_pressed)] = True
                 order += 1
