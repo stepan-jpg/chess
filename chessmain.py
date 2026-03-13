@@ -63,16 +63,16 @@ def show_allowed(x, y, alt):
             else:
                 if y+1 != 8 and table[y+1][x] == 0:
                     moves[y+1][x] = 1
-            if x-1 != -1 and table[y+1][x-1] != 0:
-                if table[y+1][x-1][1:] == 'w' or table[y+1][x-1] == 'c':
-                    moves[y+1][x-1] = 2
-                else:
+            if x-1 != -1 and (table[y+1][x-1] != 0 or capt_table[y+1][x-1] == 'c'):
+                if table[y+1][x-1] != 0 and table[y+1][x-1][1:] == 'b':
                     moves[y+1][x-1] = 3
-            if x+1 != 8 and table[y+1][x+1] != 0:
-                if table[y+1][x+1][1:] == 'w' or table[y+1][x+1] == 'c':
-                    moves[y+1][x+1] = 2
                 else:
+                    moves[y+1][x-1] = 2
+            if x+1 != 8 and (table[y+1][x+1] != 0 or capt_table[y+1][x+1] == 'c'):
+                if table[y+1][x+1] != 0 and table[y+1][x+1][1:] == 'b':
                     moves[y+1][x+1] = 3
+                else:
+                    moves[y+1][x+1] = 2
         case 'Pw':
             if alt:
                 if y > 0:
@@ -88,16 +88,16 @@ def show_allowed(x, y, alt):
             else:
                 if y-1 != -1 and table[y-1][x] == 0: 
                     moves[y-1][x] = 1
-            if x-1 != -1 and table[y-1][x-1] != 0:
-                if table[y-1][x-1][1:] == 'b' or table[y-1][x-1] == 'c':
-                    moves[y-1][x-1] = 2
-                else:
+            if x-1 != -1 and (table[y-1][x-1] != 0 or capt_table[y-1][x-1] == 'c'):
+                if table[y-1][x-1] != 0 and table[y-1][x-1][1:] == 'w':
                     moves[y-1][x-1] = 3
-            if x+1 != 8 and table[y-1][x+1] != 0:
-                if table[y-1][x+1][1:] == 'b' or table[y-1][x+1] == 'c':
-                    moves[y-1][x+1] = 2
                 else:
+                    moves[y-1][x-1] = 2
+            if x+1 != 8 and (table[y-1][x+1] != 0 or capt_table[y-1][x+1] == 'c'):
+                if table[y-1][x+1] != 0 and table[y-1][x+1][1:] == 'w':
                     moves[y-1][x+1] = 3
+                else:
+                    moves[y-1][x+1] = 2
         case 'Rb':
             for i in range(1, 8):
                 if y-i < 0: break
@@ -916,8 +916,7 @@ while running:
                 if mouse_y > 7 or mouse_y < 0: continue
             if moves[mouse_y][mouse_x] != 0 and moves[mouse_y][mouse_x] != 3:
                 if capt_pos != (0, 0):
-                    if capt_table[mouse_y][mouse_x] == 'c' and table[last_pressed[0]][last_pressed[1]][1:] == 'P':
-                        #print('clicked on capt pos')
+                    if capt_table[mouse_y][mouse_x] == 'c' and table[last_pressed[0]][last_pressed[1]][:1] == 'P':
                         table[mouse_y][mouse_x], table[last_pressed[0]][last_pressed[1]] = table[last_pressed[0]][last_pressed[1]], table[mouse_y][mouse_x]
                         table[mouse_y+(last_pressed[0]-mouse_y)][mouse_x] = 0
                         if table[mouse_y][mouse_x][1:] == 'b':
@@ -939,6 +938,7 @@ while running:
                                 continue
                         capt_table[last_pressed[0]][last_pressed[1]] = 0
                         capt_pos = (0, 0)
+                        capt_table = [[0]*8 for _ in range(8)]
                         moves = [[0]*8 for _ in range(8)]
                         draw_table()
                         pygame.display.update()
@@ -993,9 +993,6 @@ while running:
                         if check_if_mate('w'):
                             end = 2
                     else: moves = [[0]*8 for _ in range(8)]
-                if table[capt_pos[0]][capt_pos[1]] == 'c':
-                    table[capt_pos[0]][capt_pos[1]] = 0
-                    capt_pos = (0, 0)
                 if table[mouse_y][mouse_x][:1] == 'P':
                     if (mouse_y == 0 or mouse_y == 7):
                         #print(table[mouse_y][mouse_x])
